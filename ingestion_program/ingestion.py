@@ -5,12 +5,11 @@ from pathlib import Path
 
 import pandas as pd
 
-
 EVAL_SETS = ["test", "private_test"]
 
 
 def evaluate_model(model, X_test):
-
+    X_test = X_test.drop(columns=["SMILES"], errors="ignore")
     y_pred = model.predict(X_test)
     return pd.DataFrame(y_pred)
 
@@ -20,6 +19,15 @@ def get_train_data(data_dir):
     training_dir = data_dir / "train"
     X_train = pd.read_csv(training_dir / "train_features.csv")
     y_train = pd.read_csv(training_dir / "train_labels.csv")
+
+
+    X_train = X_train.drop(columns=["SMILES"], errors="ignore")
+
+    if "Label" in y_train.columns:
+        y_train = y_train["Label"]
+    else:
+        y_train = y_train.iloc[:, 0]
+
     return X_train, y_train
 
 
@@ -87,6 +95,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     sys.path.append(args.submission_dir)
-    sys.path.append(Path(__file__).parent.resolve())
+    sys.path.append(str(Path(__file__).parent.resolve()))
 
     main(Path(args.data_dir), Path(args.output_dir))
