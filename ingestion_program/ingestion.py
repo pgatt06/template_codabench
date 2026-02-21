@@ -7,12 +7,17 @@ import pandas as pd
 
 EVAL_SETS = ["test", "private_test"]
 
-
 def evaluate_model(model, X_test):
     X_test = X_test.drop(columns=["SMILES"], errors="ignore")
-    y_pred = model.predict(X_test)
-    return pd.DataFrame(y_pred)
 
+    if hasattr(model, "predict_proba"):
+        y_pred = model.predict_proba(X_test)[:, 1]
+    elif hasattr(model, "decision_function"):
+        y_pred = model.decision_function(X_test)
+    else:
+        y_pred = model.predict(X_test)
+
+    return pd.DataFrame(y_pred)
 
 def get_train_data(data_dir):
     data_dir = Path(data_dir)
