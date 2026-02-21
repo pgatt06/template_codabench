@@ -1,22 +1,31 @@
 version: 2
-title: Templat competition - Dummy classification
-description: Dummy classification task
+
+title: Drug-Induced Autoimmunity Prediction
+description: >
+  Predict drug-induced autoimmunity using RDKit molecular descriptors.
+  Participants must submit a machine learning model trained on the provided
+  training data. Performance is evaluated on public and private test sets.
+
 image: logo.png
-registration_auto_approve: False  # if True, do not require approval from admin to join the comp
+
+registration_auto_approve: false
 
 terms: pages/terms.md
+
 pages:
   - title: Participation
     file: pages/participate.md
-  - title: Seed
+  - title: Dataset
     file: pages/seed.md
   - title: Timeline
     file: pages/timeline.md
 
 tasks:
   - index: 0
-    name: Developement Task
-    description: 'Tune models with training data, test against examples contained in public test data'
+    name: Development Task
+    description: >
+      Train a model on the training set and generate predictions
+      for both public and private test sets.
     input_data: dev_phase/input_data/
     reference_data: dev_phase/reference_data/
     ingestion_program: ingestion_program/
@@ -25,15 +34,14 @@ tasks:
 solutions:
   - index: 0
     tasks:
-    - 0
+      - 0
     path: solution/
-
 
 phases:
   - name: Development Phase
-    description: 'Development phase: tune your models.'
-    start: 10-07-2025
-    end: 03-31-2026
+    description: Development phase for model tuning and validation.
+    start: 2026-02-01
+    end: 2026-06-30
     tasks:
       - 0
 
@@ -41,20 +49,20 @@ leaderboards:
   - title: Results
     key: main
     columns:
-      - title: Test Accuracy
+      - title: Public Accuracy
         key: test
         index: 0
-        sorting: asc
-      - title: Private Test Accuracy
+        sorting: desc
+      - title: Private Accuracy
         key: private_test
         index: 1
-        sorting: asc
-        hidden: True
-      - title: Train time
+        sorting: desc
+        hidden: true
+      - title: Train Time (s)
         key: train_time
         index: 2
-        sorting: desc
-      - title: Test time
+        sorting: asc
+      - title: Test Time (s)
         key: test_time
         index: 3
-        sorting: desc
+        sorting: asc
