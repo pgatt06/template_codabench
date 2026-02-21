@@ -2,12 +2,32 @@ version: 2
 
 title: Drug-Induced Autoimmunity Prediction
 description: >
-  Predict drug-induced autoimmunity using RDKit molecular descriptors.
-  Participants must submit a machine learning model trained on the provided
-  training data. Performance is evaluated on public and private test sets.
+  Goal: predict drug-induced autoimmunity from molecular information using RDKit descriptors.
+
+  Submission type: code submission (not a CSV). Participants must provide a Python file `submission.py`
+  containing a `get_model()` function that returns a scikit-learn compatible model with `fit(X, y)`
+  and `predict(X)` methods (and ideally `predict_proba(X)` or `decision_function(X)` for ROC-AUC).
+
+  Data format:
+  - Training features: dev_phase/input_data/train/train_features.csv
+  - Training labels:   dev_phase/input_data/train/train_labels.csv (column: Label)
+  - Public test features:  dev_phase/input_data/test/test_features.csv
+  - Private test features: dev_phase/input_data/private_test/private_test_features.csv
+  - Public test labels (hidden from participants):  dev_phase/reference_data/test_labels.csv
+  - Private test labels (hidden from participants): dev_phase/reference_data/private_test_labels.csv
+
+  Notes:
+  - The `SMILES` column (if present) is ignored during evaluation (dropped before prediction).
+  - Predictions are generated for both public and private test sets.
+
+  Evaluation metrics:
+  - Accuracy (public): computed on the public test set.
+  - Accuracy (private): computed on the private test set (hidden leaderboard, used for final ranking).
+  - ROC-AUC (public/private): computed from continuous scores when available.
+    The ingestion will use `predict_proba[:,1]` if supported, otherwise `decision_function`,
+    otherwise fallback to class predictions (`predict`), which may produce a less informative ROC-AUC.
 
 image: logo.png
-
 registration_auto_approve: false
 
 terms: pages/terms.md
@@ -15,7 +35,7 @@ terms: pages/terms.md
 pages:
   - title: Participation
     file: pages/participate.md
-  - title: Dataset
+  - title: Dataset & Submission Format
     file: pages/seed.md
   - title: Timeline
     file: pages/timeline.md
@@ -24,8 +44,8 @@ tasks:
   - index: 0
     name: Development Task
     description: >
-      Train a model on the training set and generate predictions
-      for both public and private test sets.
+      Train a model on the provided training set and produce predictions for the public and private test sets.
+      Scores are computed using Accuracy and ROC-AUC.
     input_data: dev_phase/input_data/
     reference_data: dev_phase/reference_data/
     ingestion_program: ingestion_program/
@@ -58,11 +78,22 @@ leaderboards:
         index: 1
         sorting: desc
         hidden: true
+
+      - title: Public ROC-AUC
+        key: test_roc_auc
+        index: 2
+        sorting: desc
+      - title: Private ROC-AUC
+        key: private_test_roc_auc
+        index: 3
+        sorting: desc
+        hidden: true
+
       - title: Train Time (s)
         key: train_time
-        index: 2
+        index: 4
         sorting: asc
       - title: Test Time (s)
         key: test_time
-        index: 3
+        index: 5
         sorting: asc
