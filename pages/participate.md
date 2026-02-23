@@ -1,6 +1,6 @@
 # How to participate
 
-To participate in the Drug Induced Autoimmunity Prediction challenge, you must submit a Python implementation of your predictive model. Your model will be trained and evaluated on molecular descriptors generated via RDKit.
+To participate in the **Drug Induced Autoimmunity Prediction challenge**, you must submit a Python implementation of your predictive model. Your model will be trained and evaluated on molecular descriptors generated via RDKit.
 
 ## 1. Submission Format
 
@@ -73,11 +73,11 @@ Our ingestion program automates the following steps:
 
 * Upload your .zip file.
 
-* Wait for the status to change to Finished to see your scores on the leaderboard.
+* Wait for the status to change to *Finished* to see your scores on the leaderboard.
 
 
 ## 5. Documentation & Resources
 
-**Seed Page:** Consult the Seed page to download a starting kit and see a baseline example.
+**Seed Page:** Consult the *Seed page* to download a starting kit.
 
 **Dataset:** Familiarize yourself with the chemical descriptors and biological features provided in the data description.
