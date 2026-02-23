@@ -2,8 +2,8 @@ from sklearn.ensemble import RandomForestClassifier
 
 def get_model():
     """
-    Cette fonction est le point d'entrée pour l'ingestion program.
-    Elle doit retourner un objet compatible avec l'API sklearn (fit/predict).
+    This function should return an untrained model instance.
+    The ingestion program will call this function to get the model, then train it on the provided training data.
     """
     # Baseline simple : Random Forest
     model = RandomForestClassifier(n_estimators=100, random_state=42)
