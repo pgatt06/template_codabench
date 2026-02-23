@@ -29,6 +29,8 @@ description: >
 
 image: logo.png
 registration_auto_approve: false
+documentation:
+    starting_kit: starting_kit.zip
 
 terms: pages/terms.md
 
