@@ -33,8 +33,8 @@ def main(reference_dir, prediction_dir, output_dir):
     for eval_set in EVAL_SETS:
         print(f"Scoring {eval_set}")
 
-        predictions = pd.read_csv(prediction_dir / f"{eval_set}_predictions.csv")
-        targets = pd.read_csv(reference_dir / f"{eval_set}_labels.csv")
+        predictions = pd.read_csv(prediction_dir / f"{eval_set}_predictions.csv", header=None)
+        targets = pd.read_csv(reference_dir / f"{eval_set}_labels.csv", header=None)
 
         # Accuracy (colonnes existantes)
         scores[eval_set] = float(compute_accuracy(predictions, targets))

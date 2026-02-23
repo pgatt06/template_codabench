@@ -35,42 +35,55 @@ def get_train_data(data_dir):
 
     return X_train, y_train
 
-
-def main(data_dir, output_dir):
+def main(data_dir, output_dir, submission_dir):
     # Here, you can import info from the submission module, to evaluate the
     # submission
-    from submission import get_model
-
-    X_train, y_train = get_train_data(data_dir)
-
-    print("Training the model")
-
-    model = get_model()
-
-    start = time.time()
-    model.fit(X_train, y_train)
-    train_time = time.time() - start
-    print("-" * 10)
-    print("Evaluate the model")
-    start = time.time()
-    res = {}
-    for eval_set in EVAL_SETS:
-        X_test = pd.read_csv(data_dir / eval_set / f"{eval_set}_features.csv")
-        res[eval_set] = evaluate_model(model, X_test)
-    test_time = time.time() - start
-    print("-" * 10)
-    duration = train_time + test_time
-    print(f"Completed Prediction. Total duration: {duration}")
-
-    # Write output files
     output_dir.mkdir(parents=True, exist_ok=True)
-    with open(output_dir / "metadata.json", "w+") as f:
-        json.dump(dict(train_time=train_time, test_time=test_time), f)
-    for eval_set in EVAL_SETS:
-        filepath = output_dir / f"{eval_set}_predictions.csv"
-        res[eval_set].to_csv(filepath, index=False)
-    print()
-    print("Ingestion Program finished. Moving on to scoring")
+    
+    # Vérifier si le participant a soumis des CSV directement
+    csv_files = list(submission_dir.glob("*.csv"))
+    if any("test_predictions.csv" in f.name for f in csv_files):
+        print("CSV detection: Copying predictions directly to output...")
+        for f in csv_files:
+            import shutil
+            shutil.copy(f, output_dir / f.name)
+        
+        # Créer un metadata.json vide pour ne pas faire planter le scoring
+        with open(output_dir / "metadata.json", "w+") as f:
+            json.dump(dict(train_time=0, test_time=0), f)
+        return
+    
+    else :
+        from submission import get_model
+        X_train, y_train = get_train_data(data_dir)
+        print("Training the model")
+
+        model = get_model()
+
+        start = time.time()
+        model.fit(X_train, y_train)
+        train_time = time.time() - start
+        print("-" * 10)
+        print("Evaluate the model")
+        start = time.time()
+        res = {}
+        for eval_set in EVAL_SETS:
+           X_test = pd.read_csv(data_dir / eval_set / f"{eval_set}_features.csv")
+           res[eval_set] = evaluate_model(model, X_test)
+        test_time = time.time() - start
+        print("-" * 10)
+        duration = train_time + test_time
+        print(f"Completed Prediction. Total duration: {duration}")
+
+        # Write output files
+        output_dir.mkdir(parents=True, exist_ok=True)
+        with open(output_dir / "metadata.json", "w+") as f:
+            json.dump(dict(train_time=train_time, test_time=test_time), f)
+        for eval_set in EVAL_SETS:
+            filepath = output_dir / f"{eval_set}_predictions.csv"
+            res[eval_set].to_csv(filepath, index=False)
+        print()
+        print("Ingestion Program finished. Moving on to scoring")
 
 
 if __name__ == "__main__":
@@ -102,4 +115,4 @@ if __name__ == "__main__":
     sys.path.append(args.submission_dir)
     sys.path.append(str(Path(__file__).parent.resolve()))
 
-    main(Path(args.data_dir), Path(args.output_dir))
+    main(Path(args.data_dir), Path(args.output_dir), Path(args.submission_dir))

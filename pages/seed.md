@@ -44,3 +44,16 @@ def get_model():
 
 The scoring program is designed to look for ``predict_proba`` first. 
 In pharmacology and toxicity prediction, knowing the confidence of a risk (probability) is often more valuable than a simple *Yes/No* answer. It also provides a more granular ROC-AUC score on the leaderboard.
+
+## Helper to save your results 
+
+You will find in the starting kit if you want to only submit a csv file: 
+
+```python
+def save_for_submission(test_probs, private_probs):
+    import pandas as pd
+    pd.DataFrame(test_probs).to_csv("test_predictions.csv", index=False, header=False)
+    pd.DataFrame(private_probs).to_csv("private_test_predictions.csv", index=False, header=False)
+    print("Files ready! Zip them and upload.")
+
+```

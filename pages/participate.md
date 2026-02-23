@@ -4,7 +4,19 @@ To participate in the **Drug Induced Autoimmunity Prediction challenge**, you mu
 
 ## 1. Submission Format
 
-You must submit a **ZIP file** containing a single file named model.py. This file must define a class named Model.
+You can participate in two ways:
+
+**Code Submission (Recommended):** Submit a **ZIP file** containing ``model.py``. Our system will train and test your model. 
+
+**Result Submission:** If you prefer to work locally, you can submit a **ZIP file** containing:
+
+* test_predictions.csv
+
+* private_test_predictions.csv
+
+A function ``export_predictions()`` is provided in the ``utils.py`` of the starting kit.
+
+*Note: CSV files must have a single column with your predictions (probabilities), no header.*
 
 ### Mandatory Class Structure
 In your ``model.py``, you must define a function ``get_model()`` that returns an object (class or pipeline) with standard Scikit-Learn methods.

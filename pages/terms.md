@@ -1,18 +1,23 @@
 # Terms and Conditions
 
-## Lorem Ipsum
+By participating in the **Drug Induced Autoimmunity Prediction challenge**, you agree to the following terms:
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+## 1. Data Usage & Intellectual Property
+**Data License:** The dataset provided (RDKit descriptors) is for educational and research purposes within the context of this competition only.
 
-## Sed ut perspiciatis
+**Ownership:** Participants retain ownership of their code. However, by submitting, you grant the organizers the right to review your code for verification purposes.
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae 
-ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit 
-aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam 
-est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore 
-et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, 
-nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae 
-consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+**Publicity:** Top-ranking participants may be invited to share a brief description of their methodology.
+
+## 2. Competition Rules
+**Single Account:** Each participant is allowed only one account. Teams are permitted, but members cannot compete individually or in other teams.
+
+**No Manual Labeling:** Any attempt to manually label the test data or use external information to identify the drugs in the test set is strictly prohibited.
+
+**Submission Limits:** You can submit up to 5 versions per day to avoid "probing" the leaderboard.
+
+## 3. Ethics & Science
+
+This competition aims to advance computational toxicology. We encourage the development of models that are not only accurate but also robust for drug safety assessment.
+
+Any attempt to exploit vulnerabilities in the Codabench platform will lead to immediate disqualification.
