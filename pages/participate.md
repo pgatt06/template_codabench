@@ -2,21 +2,28 @@
 
 To participate in the Drug Induced Autoimmunity Prediction challenge, you must submit a Python implementation of your predictive model. Your model will be trained and evaluated on molecular descriptors generated via RDKit.
 
-1. Submission Format
+## 1. Submission Format
+
 You must submit a **ZIP file** containing a single file named model.py. This file must define a class named Model.
 
-## Mandatory Class Structure
+### Mandatory Class Structure
+In your ``model.py``, you must define a function ``get_model()`` that returns an object (class or pipeline) with standard Scikit-Learn methods.
 Your Model class must implement the following methods:
 
-~python
+```python
+
+def get_model():
+    # This function must return your model object
+    return Model()
+
 class Model:
     def __init__(self):
         # Initialize your model (e.g., RandomForest, MLP, etc.)
         pass
 
-    def train(self, X_train, y_train):
-        # X_train: DataFrame of RDKit descriptors
-        # y_train: Series of target labels (0 or 1)
+    def fit(self, X, y):
+        # X: DataFrame of RDKit descriptors
+        # y: Series of target labels (0 or 1)
         pass
 
     def predict(self, X_test):
@@ -25,18 +32,19 @@ class Model:
         # Returns: numpy array or list of floats
         pass
 
+````
 
-2. Evaluation Metrics
+## 2. Evaluation Metrics
 
-Your submission will be evaluated based on two main metrics:
+Your submission will be evaluated based on **two main metrics**:
 
 **Accuracy**: Measures the proportion of correct classifications.
 
 **ROC-AUC (Primary Metric)**: Measures the ability of your model to distinguish between classes.
 
-*Note*: Since the scoring program uses roc_auc_score, ensure your predict() function returns confidence scores (probabilities) rather than hard labels to allow for a precise AUC calculation.
+*Note*: Since the scoring program uses ```roc_auc_score```, ensure your ``predict()`` function returns confidence scores (probabilities) rather than hard labels to allow for a precise AUC calculation.
 
-3. Technical Constraints
+## 3. Technical Constraints
 
 **Language:** Python 
 
@@ -47,7 +55,17 @@ Your submission will be evaluated based on two main metrics:
 **Robustness:** If your model generates NaN values, the scoring program will fill them with a default value (-10), which will heavily penalize your Accuracy and AUC. Ensure your predict() method handles missing data or edge cases.
 
 
-4. How to submit
+
+## 4. Automated Pipeline
+Our ingestion program automates the following steps:
+
+**Data Cleaning**: The SMILES column is automatically removed. You will receive only the numerical RDKit descriptors.
+
+**Scoring Optimization**: If your model has a ````predict_proba()```` or ``decision_function()`` method, it will be used automatically to compute the ROC-AUC. This is highly recommended for better ranking.
+
+**Metadata**: Training and inference times are measured and stored in ````metadata.json````.
+
+## 4. How to submit
 
 * Zip your *model.py* (do not zip the folder, just the file).
 
@@ -58,7 +76,7 @@ Your submission will be evaluated based on two main metrics:
 * Wait for the status to change to Finished to see your scores on the leaderboard.
 
 
-5. Documentation & Resources
+## 5. Documentation & Resources
 
 **Seed Page:** Consult the Seed page to download a starting kit and see a baseline example.
 
