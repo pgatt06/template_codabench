@@ -53,7 +53,7 @@ Your submission will be evaluated based on **two main metrics**:
 
 **ROC-AUC (Primary Metric)**: Measures the ability of your model to distinguish between classes.
 
-*Note*: Since the scoring program uses ```roc_auc_score```, ensure your ``predict()`` function returns confidence scores (probabilities) rather than hard labels to allow for a precise AUC calculation.
+*Note: Since the scoring program uses ```roc_auc_score```, ensure your ``predict()`` function returns confidence scores (probabilities) rather than hard labels to allow for a precise AUC calculation.*
 
 ## 4. Technical Constraints
 
