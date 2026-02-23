@@ -6,7 +6,7 @@ To participate in the **Drug Induced Autoimmunity Prediction challenge**, you mu
 
 You can participate in two ways:
 
-**Code Submission (Recommended):** Submit a **ZIP file** containing ``model.py``. Our system will train and test your model. 
+**Code Submission (Recommended):** Submit a **ZIP file** containing ``submission.py``. Our system will train and test your model. 
 
 **Result Submission:** If you prefer to work locally, you can submit a **ZIP file** containing:
 
@@ -14,13 +14,12 @@ You can participate in two ways:
 
 * private_test_predictions.csv
 
-A function ``export_predictions()`` is provided in the ``utils.py`` of the starting kit.
+*Note : A function export_predictions() is provided in the ``utils.py`` of the starting kit to help you generate these files correctly (single column, no header, no index).*
 
-*Note: CSV files must have a single column with your predictions (probabilities), no header.*
+## 2. Mandatory Class Structure
+In your ``submission.py``, you must define a function ``get_model()`` that returns your model object.
+To maximize your *ROC-AUC score*, your class should ideally implement ``predict_proba``.
 
-### Mandatory Class Structure
-In your ``model.py``, you must define a function ``get_model()`` that returns an object (class or pipeline) with standard Scikit-Learn methods.
-Your Model class must implement the following methods:
 
 ```python
 
@@ -46,7 +45,7 @@ class Model:
 
 ````
 
-## 2. Evaluation Metrics
+## 3. Evaluation Metrics
 
 Your submission will be evaluated based on **two main metrics**:
 
@@ -56,39 +55,28 @@ Your submission will be evaluated based on **two main metrics**:
 
 *Note*: Since the scoring program uses ```roc_auc_score```, ensure your ``predict()`` function returns confidence scores (probabilities) rather than hard labels to allow for a precise AUC calculation.
 
-## 3. Technical Constraints
+## 4. Technical Constraints
 
 **Language:** Python 
 
-**Libraries:** You may use standard ML libraries (Scikit-learn, PyTorch, TensorFlow, NumPy, Pandas). Ensure your code does not require internet access during execution.
+**Automated Pipeline**: The SMILES column is automatically removed before the data reaches your fit and predict methods. You will work with numerical RDKit descriptors only.
 
 **Time Limit:** The training and inference time are tracked and will be included in your final metadata.
 
-**Robustness:** If your model generates NaN values, the scoring program will fill them with a default value (-10), which will heavily penalize your Accuracy and AUC. Ensure your predict() method handles missing data or edge cases.
+**Robustness:** If your model generates NaN values, the scoring program will fill them with a default value (-10), which will heavily penalize your Accuracy and AUC. Ensure your ``predict()`` method handles missing data or edge cases.
 
 
 
-## 4. Automated Pipeline
-Our ingestion program automates the following steps:
+## 5. How to submit
 
-**Data Cleaning**: The SMILES column is automatically removed. You will receive only the numerical RDKit descriptors.
+* **Prepare your ZIP**: Zip your ``submission.py`` (*Code mode*) OR your two .csv files (*Result mode*).
+**Warning:** Zip the files directly, not the folder containing them.
 
-**Scoring Optimization**: If your model has a ````predict_proba()```` or ``decision_function()`` method, it will be used automatically to compute the ROC-AUC. This is highly recommended for better ranking.
+* **Upload**: Go to the "Submit / View Results" tab and upload your .zip.
 
-**Metadata**: Training and inference times are measured and stored in ````metadata.json````.
+* **Check Results**: Wait for the status to change to Finished. You can then click on "View Scores" to see your performance on the leaderboard.
 
-## 4. How to submit
-
-* Zip your *model.py* (do not zip the folder, just the file).
-
-* Go to the "Submit / View Results" tab.
-
-* Upload your .zip file.
-
-* Wait for the status to change to *Finished* to see your scores on the leaderboard.
-
-
-## 5. Documentation & Resources
+## 6. Documentation & Resources
 
 **Seed Page:** Consult the *Seed page* to download a starting kit.
 

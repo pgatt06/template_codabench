@@ -1,6 +1,8 @@
 # Seed: Starting Kit
 Below is the standard template to ensure your submission is compatible with our ingestion program.
 
+You can find it in our **Starting Kit** provided.
+
 ## Template for ``model.py``
 Copy this code into a file named ``model.py``, zip it, and submit it.
 
@@ -9,7 +11,7 @@ Copy this code into a file named ``model.py``, zip it, and submit it.
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
-class MyAutoimmuneModel:
+class Model:
     def __init__(self):
         # Initialize your classifier
         self.clf = RandomForestClassifier(n_estimators=100, random_state=42)
@@ -37,7 +39,7 @@ def get_model():
     """
     This is the entry point for the competition ingestion program.
     """
-    return MyAutoimmuneModel()
+    return Model()
     
 ```
 ## Why use ``predict_proba``?
@@ -47,13 +49,24 @@ In pharmacology and toxicity prediction, knowing the confidence of a risk (proba
 
 ## Helper to save your results 
 
-You will find in the starting kit if you want to only submit a csv file: 
+You will find in the starting kit this function if you want to only submit a csv file: 
 
 ```python
-def save_for_submission(test_probs, private_probs):
-    import pandas as pd
-    pd.DataFrame(test_probs).to_csv("test_predictions.csv", index=False, header=False)
-    pd.DataFrame(private_probs).to_csv("private_test_predictions.csv", index=False, header=False)
-    print("Files ready! Zip them and upload.")
-
+def export_predictions(model, X_test_public, X_test_private, output_path="./"):
+    """
+    Génère les fichiers CSV compatibles avec le format attendu par le scoring.
+    """
+    # Checking if the model has predict_proba or decision_function for better scoring
+    if hasattr(model, "predict_proba"):
+        pred_public = model.predict_proba(X_test_public)[:, 1]
+        pred_private = model.predict_proba(X_test_private)[:, 1]
+    else:
+        pred_public = model.predict(X_test_public)
+        pred_private = model.predict(X_test_private)
+    
+    # Exporting predictions to the expected format csv
+    pd.DataFrame(pred_public).to_csv(os.path.join(output_path, "test_predictions.csv"), index=False, header=False)
+    pd.DataFrame(pred_private).to_csv(os.path.join(output_path, "private_test_predictions.csv"), index=False, header=False)
+    
+    print(f"Files ready in {output_path}")
 ```
