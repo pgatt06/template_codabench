@@ -1,7 +1,10 @@
 from sklearn.ensemble import RandomForestClassifier
 
-
-# The submission here should simply be a function that returns a model
-# compatible with scikit-learn API
 def get_model():
-    return RandomForestClassifier()
+    """
+    Cette fonction est le point d'entrée pour l'ingestion program.
+    Elle doit retourner un objet compatible avec l'API sklearn (fit/predict).
+    """
+    # Baseline simple : Random Forest
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    return model
