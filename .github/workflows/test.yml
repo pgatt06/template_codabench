@@ -66,24 +66,62 @@ jobs:
                 pip-install: -r requirements.txt
                 cache: 'pip' # caching pip dependencies
             - name: Prepare input/output directories
-              run: python tools/setup_data.py
+              run: |
+                python tools/setup_data.py
+                rm -rf ingestion_res_code scoring_res_code ingestion_res_csv scoring_res_csv csv_submission
+                mkdir -p ingestion_res_code scoring_res_code ingestion_res_csv scoring_res_csv csv_submission
+                python - <<'PY'
+                from pathlib import Path
+                import pandas as pd
 
-            - name: Test ingestion program
+                root = Path(".")
+                csv_submission_dir = root / "csv_submission"
+                for eval_set in ("test", "private_test"):
+                    feature_path = root / "dev_phase" / "input_data" / eval_set / f"{eval_set}_features.csv"
+                    n_rows = len(pd.read_csv(feature_path))
+                    pd.DataFrame([0.5] * n_rows).to_csv(
+                        csv_submission_dir / f"{eval_set}_predictions.csv",
+                        index=False,
+                        header=False,
+                    )
+                PY
+
+            - name: Test ingestion program (code submission)
               run: |
                 docker run --rm -u root \
                     -v "./ingestion_program":"/app/ingestion_program" \
                     -v "./dev_phase/input_data":/app/input_data \
-                    -v "./ingestion_res":/app/output \
+                    -v "./ingestion_res_code":/app/output \
                     -v "./solution":/app/ingested_program \
-                    --name ingestion ${{ env.DOCKER_IMAGE_NAME }} \
+                    --name ingestion-code ${{ env.DOCKER_IMAGE_NAME }} \
                         python /app/ingestion_program/ingestion.py
 
-            - name: Test scoring program
+            - name: Test scoring program (code submission)
               run: |
                 docker run --rm -u root \
                     -v "./scoring_program":"/app/scoring_program" \
                     -v "./dev_phase/reference_data":/app/input/ref \
-                    -v "./ingestion_res":/app/input/res \
-                    -v "./scoring_res":/app/output \
-                    --name scoring ${{ env.DOCKER_IMAGE_NAME }} \
+                    -v "./ingestion_res_code":/app/input/res \
+                    -v "./scoring_res_code":/app/output \
+                    --name scoring-code ${{ env.DOCKER_IMAGE_NAME }} \
+                        python /app/scoring_program/scoring.py
+
+            - name: Test ingestion program (CSV submission)
+              run: |
+                docker run --rm -u root \
+                    -v "./ingestion_program":"/app/ingestion_program" \
+                    -v "./dev_phase/input_data":/app/input_data \
+                    -v "./ingestion_res_csv":/app/output \
+                    -v "./csv_submission":/app/ingested_program \
+                    --name ingestion-csv ${{ env.DOCKER_IMAGE_NAME }} \
+                        python /app/ingestion_program/ingestion.py
+
+            - name: Test scoring program (CSV submission)
+              run: |
+                docker run --rm -u root \
+                    -v "./scoring_program":"/app/scoring_program" \
+                    -v "./dev_phase/reference_data":/app/input/ref \
+                    -v "./ingestion_res_csv":/app/input/res \
+                    -v "./scoring_res_csv":/app/output \
+                    --name scoring-csv ${{ env.DOCKER_IMAGE_NAME }} \
                         python /app/scoring_program/scoring.py
