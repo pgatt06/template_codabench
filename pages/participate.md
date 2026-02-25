@@ -45,25 +45,39 @@ class Model:
 
 ````
 
+
 ## 3. Evaluation Metrics
 
-Your submission will be evaluated based on **two main metrics**:
+Your submission will be evaluated using two complementary metrics:
 
-**Accuracy**: Measures the proportion of correct classifications.
+### **Accuracy**
 
-**ROC-AUC (Primary Metric)**: Measures the ability of your model to distinguish between classes.
+Accuracy measures the proportion of correctly classified samples.
 
-*Note: Since the scoring program uses ```roc_auc_score```, ensure your ``predict()`` function returns confidence scores (probabilities) rather than hard labels to allow for a precise AUC calculation.*
+Predicted scores are converted into class labels using a threshold of **0.5**:
 
-## 4. Technical Constraints
+- score ≥ 0.5 → class 1  
+- score < 0.5 → class 0  
 
-**Language:** Python 
+Accuracy is then computed by comparing these predicted labels with the true labels.
 
-**Automated Pipeline**: The SMILES column is automatically removed before the data reaches your fit and predict methods. You will work with numerical RDKit descriptors only.
+---
 
-**Time Limit:** The training and inference time are tracked and will be included in your final metadata.
+### **ROC-AUC (Primary Metric)**
 
-**Robustness:** If your model generates NaN values, the scoring program will fill them with a default value (-10), which will heavily penalize your Accuracy and AUC. Ensure your ``predict()`` method handles missing data or edge cases.
+ROC-AUC measures your model’s ability to rank positive samples higher than negative ones, independently of a specific classification threshold.
+
+This metric is computed directly from the predicted continuous scores using `roc_auc_score`.
+
+Because ROC-AUC evaluates ranking quality, your `predict()` method must return **probabilities or continuous confidence scores**, not hard class labels (0 or 1).
+
+---
+
+### **Important Notes**
+
+- Your `predict()` method must return a single-column array or list of numeric values.
+- If your model outputs NaN values, they will be automatically replaced by `0` during scoring. This will significantly penalize both Accuracy and ROC-AUC.
+- If the evaluation set contains only one class, ROC-AUC cannot be computed and will be reported as `None`.
 
 
 

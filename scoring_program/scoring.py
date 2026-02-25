@@ -7,18 +7,24 @@ from sklearn.metrics import roc_auc_score
 EVAL_SETS = ["test", "private_test"]
 
 
-def compute_accuracy(predictions, targets):
-    pred = predictions.iloc[:, 0].fillna(-10).to_numpy()
-    y = targets.iloc[:, 0].to_numpy()
-    return (pred == y).mean()
+def read_targets(path: Path) -> pd.DataFrame:
+    raw_targets = pd.read_csv(path, header=None)
+    cleaned_targets = pd.to_numeric(raw_targets.iloc[:, 0], errors="coerce").dropna().astype(int)
+    return cleaned_targets.to_frame()
+
+
+def compute_accuracy(predictions, targets, threshold=0.5):
+    y_score = predictions.iloc[:, 0].astype(float).fillna(0.0).to_numpy()
+    y_true = targets.iloc[:, 0].astype(int).to_numpy()
+
+    y_pred = (y_score >= threshold).astype(int)
+    return (y_pred == y_true).mean()
 
 
 def compute_roc_auc(predictions, targets):
-    # AUC nécessite des scores continus idéalement (probas / scores)
-    y_score = predictions.iloc[:, 0].to_numpy()
-    y_true = targets.iloc[:, 0].to_numpy()
+    y_score = predictions.iloc[:, 0].astype(float).fillna(0.0).to_numpy()
+    y_true = targets.iloc[:, 0].astype(int).to_numpy()
 
-    # Si y_true n'a qu'une classe -> AUC impossible
     if pd.Series(y_true).nunique() < 2:
         return None
 
@@ -34,7 +40,16 @@ def main(reference_dir, prediction_dir, output_dir):
         print(f"Scoring {eval_set}")
 
         predictions = pd.read_csv(prediction_dir / f"{eval_set}_predictions.csv", header=None)
-        targets = pd.read_csv(reference_dir / f"{eval_set}_labels.csv", header=None)
+        targets = read_targets(reference_dir / f"{eval_set}_labels.csv")
+
+        if predictions.shape[0] != targets.shape[0]:
+            raise ValueError(
+                f"Prediction length mismatch: got {predictions.shape[0]}, "
+                f"expected {targets.shape[0]}"
+            )
+
+        if predictions.shape[1] != 1:
+            raise ValueError("Predictions must contain exactly one column.")
 
         # Accuracy (colonnes existantes)
         scores[eval_set] = float(compute_accuracy(predictions, targets))
